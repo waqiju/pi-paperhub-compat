@@ -1,0 +1,13 @@
+{
+	"name": "pi-paperhub-compat",
+	"version": "0.1.0",
+	"description": "PaperHub compatibility extension for pi",
+	"keywords": ["pi-package"],
+	"license": "MIT",
+	"pi": {
+		"extensions": ["./extensions"]
+	},
+	"peerDependencies": {
+		"@mariozechner/pi-coding-agent": "*"
+	}
+}
