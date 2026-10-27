@@ -2,17 +2,32 @@
 
 Compatibility extension package for using PaperHub with pi.
 
-Currently it patches provider requests for the `paperhub` provider so thinking mode is sent as:
+Currently it patches provider requests for the `paperhub` provider:
 
-```json
-{
-  "reasoning": {
-    "enabled": true
+- Thinking mode is sent as:
+
+  ```json
+  {
+    "reasoning": {
+      "enabled": true
+    }
   }
-}
-```
+  ```
 
-instead of OpenAI-style reasoning payloads that PaperHub does not accept.
+  instead of OpenAI-style reasoning payloads that PaperHub does not accept.
+
+- Models whose IDs are `kimi` or start with `kimi-` use one-hour implicit prompt caching:
+
+  ```json
+  {
+    "prompt_cache_options": {
+      "mode": "implicit",
+      "ttl": "1h"
+    }
+  }
+  ```
+
+  Other models do not get `prompt_cache_options` from this extension.
 
 ## Install
 
@@ -68,4 +83,5 @@ Add your PaperHub provider to `~/.pi/agent/models.json`:
 
 - The extension activates only for the `paperhub` provider.
 - If thinking is `off`, it does not inject `reasoning.enabled`.
+- Kimi prompt-cache injection is independent of the thinking setting.
 - Future PaperHub-specific request compatibility patches can live in the same package.

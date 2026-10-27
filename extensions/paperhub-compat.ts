@@ -23,6 +23,11 @@ function shouldEnableReasoning(payload: JsonObject, ctx: ExtensionContext, pi: E
 	return ctx.model?.provider === "paperhub" && ctx.model.reasoning === true && pi.getThinkingLevel() !== "off";
 }
 
+function isKimiModel(ctx: ExtensionContext): boolean {
+	const modelId = ctx.model?.id.toLowerCase();
+	return modelId === "kimi" || modelId?.startsWith("kimi-") === true;
+}
+
 export default function (pi: ExtensionAPI) {
 	pi.on("before_provider_request", (event, ctx) => {
 		if (ctx.model?.provider !== "paperhub" || !isObject(event.payload)) {
@@ -33,6 +38,10 @@ export default function (pi: ExtensionAPI) {
 		const enableReasoning = shouldEnableReasoning(payload, ctx, pi);
 
 		delete payload.reasoning_effort;
+
+		if (isKimiModel(ctx)) {
+			payload.prompt_cache_options = { mode: "implicit", ttl: "1h" };
+		}
 
 		if (!enableReasoning) {
 			if (isObject(payload.reasoning) && "effort" in payload.reasoning) {
